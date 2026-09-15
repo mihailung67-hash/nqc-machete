@@ -63,13 +63,16 @@ if (typeof document !== 'undefined') {
 
 // Deschiderea din aplicația NQC ERP: parola vine în fragmentul linkului (#p=…), care nu pleacă spre server.
 if (typeof document !== 'undefined' && location.hash.indexOf('#p=') === 0) {
-  const parolaDinLink = decodeURIComponent(location.hash.slice(3));
+  let parolaDinLink = '';
+  try { parolaDinLink = decodeURIComponent(location.hash.slice(3)).trim(); } catch (e) {}
   try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
-  const b = document.getElementById('b'), m = document.getElementById('m');
-  b.disabled = true; m.style.color = '#6C7380'; m.textContent = 'Se deschide…';
-  decripteaza(parolaDinLink)
-    .then((html) => { document.open(); document.write(html); document.close(); })
-    .catch(() => { m.textContent = ''; b.disabled = false; });
+  if (parolaDinLink) {
+    const b = document.getElementById('b'), m = document.getElementById('m');
+    b.disabled = true; m.style.color = '#6C7380'; m.textContent = 'Se deschide…';
+    decripteaza(parolaDinLink)
+      .then((html) => { document.open(); document.write(html); document.close(); })
+      .catch(() => { m.style.color = '#C8373A'; m.textContent = 'Deschiderea directă nu a mers. Scrie parola.'; b.disabled = false; });
+  }
 }
 </script>
 </body>
