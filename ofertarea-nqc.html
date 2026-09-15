@@ -60,6 +60,17 @@ if (typeof document !== 'undefined') {
     }
   });
 }
+
+// Deschiderea din aplicația NQC ERP: parola vine în fragmentul linkului (#p=…), care nu pleacă spre server.
+if (typeof document !== 'undefined' && location.hash.indexOf('#p=') === 0) {
+  const parolaDinLink = decodeURIComponent(location.hash.slice(3));
+  try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  const b = document.getElementById('b'), m = document.getElementById('m');
+  b.disabled = true; m.style.color = '#6C7380'; m.textContent = 'Se deschide…';
+  decripteaza(parolaDinLink)
+    .then((html) => { document.open(); document.write(html); document.close(); })
+    .catch(() => { m.textContent = ''; b.disabled = false; });
+}
 </script>
 </body>
 </html>
